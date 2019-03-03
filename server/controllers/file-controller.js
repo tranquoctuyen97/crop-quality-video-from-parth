@@ -16,7 +16,7 @@ export default class FileController {
            }
            const isCropVideo = await fileHelper.cropVideo(filePath);
            if(!isCropVideo) {
-               return response.returnError(res, new Error('Error Crop Video !'));
+               return response.returnError(res, new Error('Quatily of video <= 720p !'));
             }
            return response.returnSuccess(res, 'Crop video done !');
 

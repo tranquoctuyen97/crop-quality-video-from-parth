@@ -5,16 +5,15 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 export default class FileHelper {
 
     async cropVideo (filePath) {
-      try {
-        const videoInfo = await this.getVideoInfor(filePath);
-        console.log(videoInfo)
-        if (videoInfo.size > 720) {
-            await this.genQuality(filePath, videoInfo.name);
-            return true;
-        }
-      } catch (error) {
-          return false;
-      }       
+        try {
+            const videoInfo = await this.getVideoInfor(filePath);
+            if (videoInfo.size > 720) {
+                await this.genQuality(filePath, videoInfo.name);
+                return true;
+            }
+          } catch (error) {
+              return false;
+          }      
     };
     getVideoInfor (filePath) {
         ffmpeg.setFfmpegPath(ffmpegPath);
@@ -46,8 +45,6 @@ export default class FileHelper {
                  reject(err);
             })
             .save(output);
-            console.log(video)
-
         });
     }
 
