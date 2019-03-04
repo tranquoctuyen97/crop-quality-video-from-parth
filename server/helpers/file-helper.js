@@ -6,16 +6,17 @@ export default class FileHelper {
 
     async cropVideo (filePath) {
         try {
-            const videoInfo = await this.getVideoInfor(filePath);
-            if (videoInfo.size > 720) {
-                await this.genQuality(filePath, videoInfo.name);
-                return true;
+            const videoInfo = await this.getVideoInfo(filePath);
+            if (videoInfo.size <= 720) {
+                return false;
             }
-          } catch (error) {
-              return false;
-          }      
+            await this.genQuality(filePath, videoInfo.name);
+            return true;
+        } catch (error) {
+            return false;
+        }
     };
-    getVideoInfor (filePath) {
+    getVideoInfo (filePath) {
         ffmpeg.setFfmpegPath(ffmpegPath);
         return new Promise((resolve, reject) => { 
             ffmpeg.ffprobe(filePath, function(err, metadata) {
@@ -35,9 +36,25 @@ export default class FileHelper {
         ffmpeg.setFfmpegPath(ffmpegPath);
         const proc = ffmpeg(filePath);
         return new Promise((resolve, reject) => { 
-            const video = proc.videoBitrate(720)
+            ffmpeg(filePath)
+                // set size in percent
+                .size('1280x720')
+                // set fps
+                // .fps(24)
+                // // set audio bitrate
+                // .audioBitrate('128k')
+                // // // set audio codec
+                // .audioCodec('libmp3lame')
+                // // set number of audio channels
+                // .audioChannels(2)
+                // // set custom option
+                // .addOption('-vtag', 'DIVX')
+                // // set output format to force
+                // .format('avi')
+                // setup event handlers
+
             .on('end', function() {
-                console.log('file has been converted succesfully');
+                console.log('file has been converted successfully');
                  resolve(true);
             })
             .on('error', function(err) {
